@@ -1,0 +1,48 @@
+parameters:
+  paths:
+    - ./src
+  exclude_files:
+    - '#.*\/src\/.*\/Infrastructure\/Adapter\/.*#'
+    - '#.*\/src\/.*\/Infrastructure\/Api\/.*#'
+  layers:
+    - name: Shared
+      collectors:
+        - type: directory
+          regex: /src/Shared/.*
+    - name: Skills
+      collectors:
+        - type: directory
+          regex: /src/Skills/.*
+    - name: Testing
+      collectors:
+        - type: directory
+          regex: /src/Testing/.*
+    - name: Users
+      collectors:
+        - type: directory
+          regex: /src/Users/.*
+    - name: Training
+      collectors:
+        - type: directory
+          regex: /src/Training/.*
+    - name: Orders
+      collectors:
+        - type: directory
+          regex: /src/Orders/.*
+    - name: Payments
+      collectors:
+        - type: directory
+          regex: /src/Payments/.*
+  ruleset:
+    Skills:
+      - Shared
+    Testing:
+      - Shared
+    Users:
+      - Shared
+    Training:
+      - Shared
+    Orders:
+      - Shared
+    Payments:
+      - Shared

@@ -1,0 +1,20 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="App\Training\Domain\Aggregate\Material\Material" table="training_material">
+        <id name="id" type="string" length="26">
+            <generator strategy="NONE"/>
+        </id>
+        <field name="name" type="string"/>
+        <field name="description" type="string"/>
+        <field name="price" type="integer"/>
+        <field name="type"
+               type="string"
+               enum-type="App\Training\Domain\Aggregate\Material\Type"
+        />
+        <field name="createdAt" type="datetime_immutable"/>
+        <field name="updatedAt" type="datetime_immutable" nullable="true"/>
+    </entity>
+
+</doctrine-mapping>

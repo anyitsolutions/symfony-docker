@@ -1,0 +1,16 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Orders\Domain\Aggregate\Order\Item" table="orders_order_item">
+        <id name="id" type="string" length="26">
+            <generator strategy="NONE"/>
+        </id>
+        <many-to-one field="order" target-entity="App\Orders\Domain\Aggregate\Order\Order" inversed-by="items"/>
+        <embedded name="product" class="App\Orders\Domain\Aggregate\Order\Product" column-prefix="product_"/>
+        <field name="price" type="integer"/>
+        <field name="createdAt" type="datetime_immutable"/>
+    </entity>
+
+</doctrine-mapping>
