@@ -7,6 +7,7 @@ namespace App\Orders\Infrastructure\Event;
 use App\Orders\Domain\Aggregate\DomainEventInterface;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class DomainEventProducer
@@ -19,7 +20,10 @@ class DomainEventProducer
     {
         foreach ($events as $event) {
             $event = $this->wrapDomainEvent($event);
-            $stamps = [new AmqpStamp($event->getEventType())];
+            $stamps = [
+                new AmqpStamp($event->getEventType()),
+                new DispatchAfterCurrentBusStamp()
+            ];
 
             $this->eventBus->dispatch($event, $stamps);
         }

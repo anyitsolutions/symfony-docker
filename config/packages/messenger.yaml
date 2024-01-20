@@ -16,6 +16,12 @@ framework:
         # failure_transport: failed
 
         transports:
+            orders_outbox:
+                dsn: '%env(DOCTRINE_MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    table_name: 'orders_outbox_message'
+                    use_notify: true
+                    auto_setup: true
             # failed: 'doctrine://default?queue_name=failed'
             # sync: 'sync://'
             orders:
@@ -44,5 +50,6 @@ framework:
                                 - 'orders.#'
 
         routing:
+            'App\Orders\Infrastructure\Event\Outbox\OutboxMessage': orders_outbox
             'App\Orders\Infrastructure\Event\EventEnvelope': [orders, payments]
             'App\Payments\Infrastructure\Event\EventEnvelope': [orders, payments]

@@ -17,7 +17,7 @@ class InvoiceItemsType extends Type
 {
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return Types::JSON;
+        return 'json NOT NULL';
     }
 
     public function getName(): string
@@ -40,5 +40,10 @@ class InvoiceItemsType extends Type
         $serializer = new Serializer([new ArrayDenormalizer(), new ObjectNormalizer()], [new JsonEncoder()]);
 
         return $serializer->serialize($value, 'json');
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
     }
 }
