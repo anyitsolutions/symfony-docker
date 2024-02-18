@@ -33,26 +33,11 @@ final class Order extends AggregateRoot
     {
         $this->id = UlidService::generate();
         $this->customerId = $customerId;
-        $this->status = OrderStatus::CREATED;
-        $this->items = new ArrayCollection();
         $this->totalPrice = $totalPrice;
         $this->paymentMethod = $paymentMethod;
         $this->createdAt = new \DateTimeImmutable();
-    }
-
-    public function create(array $items): void
-    {
-        $this->items = new ArrayCollection($items);
         $this->status = OrderStatus::CREATED;
-
-        $itemsEventData = $this->items->map(function (Item $item) {
-            return [
-                'id' => $item->getProduct()->getId(),
-                'name' => $item->getProduct()->getName(),
-                'price' => $item->getPrice(),
-            ];
-        })->toArray();
-        $this->registerDomainEvent(new OrderCreatedEvent($this->id, $this->customerId, $itemsEventData, $this->totalPrice));
+        $this->items = new ArrayCollection();
     }
 
     public function getId(): string
@@ -83,5 +68,33 @@ final class Order extends AggregateRoot
     public function getPaymentMethod(): PaymentMethod
     {
         return $this->paymentMethod;
+    }
+
+    public function setItems(array $items): void
+    {
+        $this->items = new ArrayCollection($items);
+    }
+
+    public function setStatus(OrderStatus $status): void
+    {
+        $this->status = $status;
+    }
+
+    public function cancel(): void
+    {
+        $this->status = OrderStatus::CANCELLED;
+        $this->registerDomainEvent(new OrderCancelledDomainEvent($this->id));
+    }
+
+    public function complete(): void
+    {
+        $this->status = OrderStatus::COMPLETED;
+        $this->registerDomainEvent(new OrderCompletedDomainEvent($this->id));
+    }
+
+    public function markAsPaid(): void
+    {
+        $this->status = OrderStatus::PAID;
+        $this->registerDomainEvent(new OrderPaidDomainEvent($this->id));
     }
 }

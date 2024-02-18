@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 #[AsMessageHandler]
 final class EventEnvelopeHandler
 {
-    private const MAP = [
+    private const EVENT_MAP = [
         EventType::USERS_USER_CREATED => UserCreatedExternalEvent::class,
     ];
 
@@ -23,18 +23,12 @@ final class EventEnvelopeHandler
 
     public function __invoke(EventEnvelope $eventEnvelope): void
     {
-        $domainEvent = $this->denormalizer->denormalize(
-            $eventEnvelope->getEventData(),
-            $this->getClassByType($eventEnvelope->getEventType())
-        );
-        $this->eventBus->dispatch($domainEvent);
-    }
+        $class = self::EVENT_MAP[$eventEnvelope->getEventType()] ?? null;
+        if (null === $class) {
+            return;
+        }
 
-    /**
-     * @return class-string|null
-     */
-    private function getClassByType(string $type): ?string
-    {
-        return self::MAP[$type] ?? null;
+        $domainEvent = $this->denormalizer->denormalize($eventEnvelope->getEventData(), $class);
+        $this->eventBus->dispatch($domainEvent);
     }
 }

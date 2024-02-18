@@ -70,7 +70,7 @@ db_schema_validate:
 	${DOCKER_COMPOSE} exec -u www-data php-fpm bin/console doctrine:schema:validate
 
 db_migration_down:
-	${DOCKER_COMPOSE} exec -u www-data php-fpm bin/console doctrine:migrations:execute "App\Shared\Infrastructure\Database\Migrations\Version********" --down --dry-run
+	${DOCKER_COMPOSE} exec -u www-data php-fpm bin/console doctrine:migrations:execute "App\Shared\Infrastructure\Database\Migrations\Version20240201164919" --down --dry-run
 
 db_drop:
 	docker-compose -f ./docker/docker-compose.yml exec -u www-data php-fpm bin/console doctrine:schema:drop --force

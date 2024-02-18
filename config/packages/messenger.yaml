@@ -22,8 +22,34 @@ framework:
                     table_name: 'orders_outbox_message'
                     use_notify: true
                     auto_setup: true
-            # failed: 'doctrine://default?queue_name=failed'
-            # sync: 'sync://'
+                    check_delayed_interval: 1000
+            inventory_outbox:
+                dsn: '%env(DOCTRINE_MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    table_name: 'inventory_outbox_message'
+                    use_notify: true
+                    auto_setup: true
+                    check_delayed_interval: 1000
+            payments_outbox:
+                dsn: '%env(DOCTRINE_MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    table_name: 'payments_outbox_message'
+                    use_notify: true
+                    auto_setup: true
+                    check_delayed_interval: 1000
+            saga:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                serializer: 'App\Saga\Event\EventEnvelopeSerializer'
+                options:
+                    exchange:
+                        name: 'saga'
+                        type: 'topic'
+                    queues:
+                        saga:
+                            binding_keys:
+                                - 'payments.#'
+                                - 'inventory.#'
+                                - 'orders.#'
             orders:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 serializer: 'App\Orders\Infrastructure\Event\EventEnvelopeSerializer'
@@ -34,8 +60,26 @@ framework:
                     queues:
                         orders:
                             binding_keys:
-                                - 'orders.#'
                                 - 'payments.#'
+                                - 'inventory.#'
+                                - 'orders.#'
+            inventory:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                serializer: 'App\Inventory\Infrastructure\Event\EventEnvelopeSerializer'
+#                retry_strategy:
+#                    max_retries: 3
+#                    delay: 1000
+#                    multiplier: 2
+                options:
+                    exchange:
+                        name: 'inventory'
+                        type: 'topic'
+                    queues:
+                        inventory:
+                            binding_keys:
+                                - 'payments.#'
+                                - 'inventory.#'
+                                - 'orders.#'
             payments:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 serializer: 'App\Payments\Infrastructure\Event\EventEnvelopeSerializer'
@@ -47,9 +91,13 @@ framework:
                         payments:
                             binding_keys:
                                 - 'payments.#'
+                                - 'inventory.#'
                                 - 'orders.#'
 
         routing:
+            'App\Orders\Infrastructure\Event\EventEnvelope': [orders, payments, inventory, saga]
             'App\Orders\Infrastructure\Event\Outbox\OutboxMessage': orders_outbox
-            'App\Orders\Infrastructure\Event\EventEnvelope': [orders, payments]
-            'App\Payments\Infrastructure\Event\EventEnvelope': [orders, payments]
+            'App\Payments\Infrastructure\Event\EventEnvelope': [orders, payments, inventory, saga]
+            'App\Payments\Infrastructure\Event\Outbox\OutboxMessage': payments_outbox
+            'App\Inventory\Infrastructure\Event\EventEnvelope': [orders, payments, inventory, saga]
+            'App\Inventory\Infrastructure\Event\Outbox\OutboxMessage': inventory_outbox

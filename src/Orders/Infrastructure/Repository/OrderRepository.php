@@ -21,4 +21,9 @@ final class OrderRepository extends ServiceEntityRepository implements OrderRepo
         $this->_em->persist($order);
         $this->_em->flush();
     }
+
+    public function findOneById(string $orderId): ?Order
+    {
+        return $this->find($orderId);
+    }
 }

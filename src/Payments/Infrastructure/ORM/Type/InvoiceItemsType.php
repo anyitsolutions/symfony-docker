@@ -7,7 +7,6 @@ namespace App\Payments\Infrastructure\ORM\Type;
 use App\Payments\Domain\Aggregate\Invoice\Item;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -27,12 +26,9 @@ class InvoiceItemsType extends Type
 
     public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
-        /** @var Item[] $items */
-        $items = [];
-        $serializer = new Serializer();
-        $serializer->deserialize($items, 'Item[]', 'json');
+        $serializer = new Serializer([new ArrayDenormalizer(), new ObjectNormalizer()], [new JsonEncoder()]);
 
-        return $items;
+        return $serializer->deserialize($value, Item::class.'[]', 'json');
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed

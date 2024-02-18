@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console;
 
+use App\Inventory\Application\UseCase\InventoryUseCaseInteractor;
 use App\Orders\Application\UseCase\OrdersUseCase;
-use App\Training\Application\UseCase\TrainingUseCaseInteractor;
-use App\Training\Domain\Aggregate\Material\Type;
+use App\Orders\Domain\Aggregate\Order\OrderRepositoryInterface;
+use App\Orders\Infrastructure\Adapter\Products\ProductsAdapter;
+use App\Saga\CreateOrder\Service\Orchestrator\CreateOrderOrchestrator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,17 +21,22 @@ final class TestConsoleCommand extends Command
 {
     public function __construct(
         private OrdersUseCase $ordersUseCase,
-        private TrainingUseCaseInteractor $trainingUseCaseInteractor
+        private ProductsAdapter $productsAdapter,
+        private InventoryUseCaseInteractor $inventoryUseCaseInteractor,
+        private OrderRepositoryInterface $orderRepository,
+        private CreateOrderOrchestrator $createOrderOrchestratorSagaService,
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $material = $this->trainingUseCaseInteractor
-            ->createMaterial('name', 'description', Type::VIDEO->value, 100)
-            ->material;
-        $this->ordersUseCase->createMaterialPurchaseOrder('customer_id', $material->id);
+        $this->inventoryUseCaseInteractor->addProduct('product_id', 10);
+        $product = $this->productsAdapter->findProduct('product_id');
+        $orderId = $this->ordersUseCase
+            ->createOrder('customer_id', $product->id)
+            ->orderId;
+        //        $this->createOrderOrchestratorSagaService->run($order->getId());
 
         return Command::SUCCESS;
     }

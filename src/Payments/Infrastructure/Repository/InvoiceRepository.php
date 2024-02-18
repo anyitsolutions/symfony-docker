@@ -21,4 +21,14 @@ final class InvoiceRepository extends ServiceEntityRepository implements Invoice
         $this->_em->persist($invoice);
         $this->_em->flush();
     }
+
+    public function findOne(string $invoiceId): ?Invoice
+    {
+        return $this->find($invoiceId);
+    }
+
+    public function findOneByOrderId(string $orderId): ?Invoice
+    {
+        return $this->findOneBy(['orderId' => $orderId]);
+    }
 }

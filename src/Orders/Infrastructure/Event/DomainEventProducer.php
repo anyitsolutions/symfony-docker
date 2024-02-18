@@ -22,7 +22,7 @@ class DomainEventProducer
             $event = $this->wrapDomainEvent($event);
             $stamps = [
                 new AmqpStamp($event->getEventType()),
-                new DispatchAfterCurrentBusStamp()
+                new DispatchAfterCurrentBusStamp(),
             ];
 
             $this->eventBus->dispatch($event, $stamps);

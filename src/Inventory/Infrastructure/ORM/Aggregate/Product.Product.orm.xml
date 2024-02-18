@@ -1,0 +1,15 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Inventory\Domain\Aggregate\Product\Product" table="inventory_product">
+        <id name="id" type="string" length="26">
+            <generator strategy="NONE"/>
+        </id>
+
+        <field name="quantity" type="integer" column="quantity" nullable="false"/>
+    </entity>
+
+</doctrine-mapping>

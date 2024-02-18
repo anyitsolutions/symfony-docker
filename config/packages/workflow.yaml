@@ -1,0 +1,48 @@
+framework:
+    workflows:
+        create_order:
+            type: 'state_machine'
+#            marking_store:
+#                type: 'method'
+#                property: 'state'
+            marking_store:
+                service: App\Saga\CreateOrder\SagaMarkingStore
+            supports:
+                - App\Saga\CreateOrder\Entity\CreateOrderSagaEntity
+            initial_marking: reservation_pending
+            places:
+                reservation_pending: ~
+                reservation_rejected: ~
+                reservation_confirmed: ~
+
+                payment_pending: ~
+                payment_rejected: ~
+                payment_confirmed: ~
+
+                order_completed:  ~
+                order_cancelled:  ~
+            transitions:
+                confirm_reservation:
+                    from: reservation_pending
+                    to: reservation_confirmed
+                reject_reservation:
+                    from: reservation_pending
+                    to: reservation_rejected
+
+                pay_order:
+                    from: reservation_confirmed
+                    to: payment_pending
+                confirm_payment:
+                    from: payment_pending
+                    to: payment_confirmed
+                reject_payment:
+                    from: payment_pending
+                    to: payment_rejected
+
+                complete:
+                    from: payment_confirmed
+                    to: order_completed
+
+                cancel:
+                    from: [reservation_rejected, payment_rejected]
+                    to: order_cancelled

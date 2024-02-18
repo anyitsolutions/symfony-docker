@@ -1,0 +1,20 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Inventory\Domain\Aggregate\Product\ProductReservation" table="inventory_product_reservation">
+        <id name="id" type="string" length="26">
+            <generator strategy="NONE"/>
+        </id>
+        <field name="productId" type="string" column="product_id" length="26" nullable="false"/>
+        <field name="orderId" type="string" column="order_id" length="26" nullable="false"/>
+        <field name="quantity" type="integer" column="quantity" nullable="false"/>
+
+        <unique-constraints>
+            <unique-constraint columns="product_id,order_id"/>
+        </unique-constraints>
+    </entity>
+
+</doctrine-mapping>

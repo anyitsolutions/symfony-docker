@@ -7,4 +7,6 @@ namespace App\Orders\Domain\Aggregate\Order;
 interface OrderRepositoryInterface
 {
     public function save(Order $order): void;
+
+    public function findOneById(string $orderId): ?Order;
 }

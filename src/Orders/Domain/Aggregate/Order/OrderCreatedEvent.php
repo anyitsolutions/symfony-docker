@@ -13,7 +13,8 @@ final class OrderCreatedEvent implements DomainEventInterface
         private string $orderId,
         private string $customerId,
         private array $items,
-        private int $totalPrice
+        private int $totalPrice,
+        private string $paymentMethod
     ) {
     }
 
@@ -40,5 +41,10 @@ final class OrderCreatedEvent implements DomainEventInterface
     public function getCustomerId(): string
     {
         return $this->customerId;
+    }
+
+    public function getPaymentMethod(): string
+    {
+        return $this->paymentMethod;
     }
 }

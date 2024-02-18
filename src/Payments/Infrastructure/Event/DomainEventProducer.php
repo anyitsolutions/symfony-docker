@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Payments\Infrastructure\Event;
 
 use App\Payments\Domain\Aggregate\DomainEventInterface;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class DomainEventProducer
@@ -14,20 +16,20 @@ class DomainEventProducer
     {
     }
 
-    public function produce(object ...$events): void
+    public function produce(DomainEventInterface ...$events): void
     {
         foreach ($events as $event) {
-            $stamps = [];
-            if ($event instanceof DomainEventInterface) {
-                $event = $this->wrap($event);
-                //                $stamps[] = new AmqpStamp($event->getEventType());
-            }
+            $event = $this->wrapDomainEvent($event);
+            $stamps = [
+                new AmqpStamp($event->getEventType()),
+                new DispatchAfterCurrentBusStamp(),
+            ];
 
             $this->eventBus->dispatch($event, $stamps);
         }
     }
 
-    private function wrap(DomainEventInterface $event): EventEnvelope
+    private function wrapDomainEvent(DomainEventInterface $event): EventEnvelope
     {
         return new EventEnvelope(
             $event->getType(),

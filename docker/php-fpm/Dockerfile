@@ -37,6 +37,9 @@ RUN apk add --no-cache rabbitmq-c-dev \
 RUN apk add --no-cache supervisor
 COPY ./docker/php-fpm/supervisord.conf /etc/supervisord.conf
 
+# Graphviz, provides the dot command (Symfony Workflow component)
+RUN apk add --no-cache graphviz ttf-freefont
+
 # Source code
 RUN chown www-data:www-data /var/www
 COPY --chown=www-data:www-data ./ /var/www

@@ -33,6 +33,14 @@ parameters:
       collectors:
         - type: directory
           regex: /src/Payments/.*
+    - name: Inventory
+      collectors:
+        - type: directory
+          regex: /src/Inventory/.*
+    - name: Saga
+      collectors:
+        - type: directory
+          regex: /src/Saga/.*
   ruleset:
     Skills:
       - Shared
@@ -45,4 +53,8 @@ parameters:
     Orders:
       - Shared
     Payments:
+      - Shared
+    Inventory:
+      - Shared
+    Saga:
       - Shared

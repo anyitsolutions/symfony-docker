@@ -12,6 +12,7 @@
         <field name="orderId" type="string" length="26" nullable="false" unique="true"/>
         <field name="customerId" type="string" length="26" nullable="false"/>
         <field name="status" type="string" enum-type="\App\Payments\Domain\Aggregate\Invoice\Status"/>
+        <field name="paymentMethod" type="string" enum-type="\App\Payments\Domain\Aggregate\Payment\PaymentMethod"/>
         <field name="amount" type="integer"/>
         <field name="items" type="invoice_items"/>
 

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Orders\Application\UseCase;
 
-use App\Orders\Application\UseCase\Command\CreateMaterialPurchaseOrder\CreateMaterialPurchaseOrderCommand;
+use App\Orders\Application\UseCase\Command\CreateOrder\CreateOrderCommand;
+use App\Orders\Application\UseCase\Command\CreateOrder\CreateOrderCommandResult;
 use App\Shared\Application\Command\CommandBusInterface;
 
 final class OrdersUseCase
@@ -13,8 +14,10 @@ final class OrdersUseCase
     {
     }
 
-    public function createMaterialPurchaseOrder(string $customerId, string $materialId): void
-    {
-        $this->commandBus->execute(new CreateMaterialPurchaseOrderCommand($customerId, $materialId));
+    public function createOrder(
+        string $customerId,
+        string $productId
+    ): CreateOrderCommandResult {
+        return $this->commandBus->execute(new CreateOrderCommand($customerId, $productId));
     }
 }

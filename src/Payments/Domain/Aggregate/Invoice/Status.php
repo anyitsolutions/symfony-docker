@@ -12,4 +12,9 @@ enum Status: string
     case CREATED = 'created';
     case PAID = 'paid';
     case CANCELLED = 'cancelled';
+
+    public function isCreated(): bool
+    {
+        return self::CREATED === $this;
+    }
 }

@@ -55,6 +55,18 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Payments/Infrastructure/ORM/Aggregate'
                 prefix: 'App\Payments\Domain\Aggregate'
                 alias: Payment
+            Inventory:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/src/Inventory/Infrastructure/ORM/Aggregate'
+                prefix: 'App\Inventory\Domain\Aggregate'
+                alias: Inventory
+            Saga:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Saga'
+                prefix: 'App\Saga'
+                alias: Saga
 
 #when@test:
 #    doctrine:

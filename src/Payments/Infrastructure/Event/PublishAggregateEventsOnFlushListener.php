@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Payments\Infrastructure\Event;
 
 use App\Payments\Domain\Aggregate\AggregateRoot;
+use App\Payments\Infrastructure\Event\Outbox\OutboxMessageProducer;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
@@ -12,7 +13,7 @@ use Doctrine\ORM\Events;
 #[AsDoctrineListener(event: Events::onFlush)]
 final readonly class PublishAggregateEventsOnFlushListener
 {
-    public function __construct(private DomainEventProducer $eventProducer)
+    public function __construct(private OutboxMessageProducer $outboxProducer)
     {
     }
 
@@ -48,7 +49,7 @@ final readonly class PublishAggregateEventsOnFlushListener
     private function publishDomainEvent(object $entity): void
     {
         if ($entity instanceof AggregateRoot && !$entity->eventsEmpty()) {
-            $this->eventProducer->produce(...$entity->getDomainEvents());
+            $this->outboxProducer->produce(...$entity->getDomainEvents());
         }
     }
 }
